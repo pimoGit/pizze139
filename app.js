@@ -10,6 +10,13 @@ app.get('/', (req, res) => {
     res.send("Ciao sono la rotta Home, della mia pizzeria!!!");
 })
 
+// definiamo una rotta dettaglio prodotto per testare un parametro dinamico	
+app.get('/products/:id', function (req, res) {
+    console.log(`Hai richiesto il prodotto con ID: ${req.params.id}`);
+    res.send(`Hai richiesto il prodotto con ID: ${req.params.id}`);
+})
+
+
 // definiamo la rotta menù della pizzeria
 app.get('/menu', (req, res) => {
     // array di pizze da ritornare
