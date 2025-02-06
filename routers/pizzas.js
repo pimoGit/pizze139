@@ -71,7 +71,37 @@ router.patch('/:id', function (req, res) {
 
 // destroy
 router.delete('/:id', function (req, res) {
-    res.send('Eliminazione della pizza ' + req.params.id);
+    // res.send('Eliminazione della pizza ' + req.params.id);
+
+    // recuperiamo l'id dall' URL e trasformiamolo in numero
+    const id = parseInt(req.params.id)
+
+    // cerchiamo il pizza tramite id
+    const pizza = menu.find(pizza => pizza.id === id);
+
+    // Facciamo il controllo
+    if (!pizza) {
+
+        // ritorno lo stato di errore 404, non trovato
+        res.status(404);
+
+        // ritorno un messaggio di errore (formato json)
+        return res.json({
+            error: "Not Found",
+            message: "Pizza non trovata"
+        })
+    }
+
+    // cancello la pizza trovata
+    menu.splice(menu.indexOf(pizza), 1);
+
+    // log di riscontro di check su aggiornamento dati
+    console.log(menu);
+
+
+
+    // ritorno la risposta positiva di avvenuta cancellazione
+    res.sendStatus(204);
 });
 
 // esportiamo il modulo del router
