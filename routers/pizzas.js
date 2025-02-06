@@ -10,7 +10,21 @@ const menu = require('../data/pizzas');
 // index
 router.get('/', function (req, res) {
     // res.send('Lista delle pizze');
-    res.json(menu);
+    // res.json(menu);
+
+    //Inizialmente, il menu filtrato corrisponde a quello originale
+    let filteredMenu = menu;
+
+    // Se la richiesta contiene un filtro, allora filtriamo il menu
+    if (req.query.ingredient) {
+        filteredMenu = menu.filter(
+            pizza => pizza.ingredients.includes(req.query.ingredient)
+        );
+    }
+
+    // restituiamo la variabile filteredMenu
+    // potrebbe essere stata filtrata o contenere il menu originale
+    res.json(filteredMenu);
 });
 // show
 router.get('/:id', function (req, res) {
