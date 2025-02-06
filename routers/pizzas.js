@@ -3,10 +3,14 @@ const express = require('express')
 const router = express.Router();
 
 
+// Importiamo il menu, in modo che sia visibile a tutti
+const menu = require('../data/pizzas');
+
 // rotte di CRUD delle pizze
 // index
 router.get('/', function (req, res) {
-    res.send('Lista delle pizze');
+    // res.send('Lista delle pizze');
+    res.json(menu);
 });
 // show
 router.get('/:id', function (req, res) {

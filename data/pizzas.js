@@ -26,3 +26,6 @@ const menu = [
         ingredients: ["pomodoro", "mozzarella", "gorgonzola", "parmigiano", "ricotta"],
     }
 ];
+
+
+module.exports = menu;
