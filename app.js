@@ -8,6 +8,9 @@ const pizzasRouter = require('./routers/pizzas');
 // definiamo l'uso di una cartella per i file statici
 app.use(express.static('public'));
 
+// registro il body-parser per "application/json"
+app.use(express.json());
+
 // definiamo la rotta home
 app.get('/', (req, res) => {
     res.send("Ciao sono la rotta Home, della mia pizzeria!!!");

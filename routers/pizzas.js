@@ -13,19 +13,13 @@ router.get('/', pizzaController.index);
 router.get('/:id', pizzaController.show);
 
 // store
-router.post('/', function (req, res) {
-    res.send('Creazione nuova pizza');
-});
+router.post('/', pizzaController.store);
 
 // update
-router.put('/:id', function (req, res) {
-    res.send('Modifica integrale della pizza ' + req.params.id);
-});
+router.put('/:id', pizzaController.update);
 
 // modify
-router.patch('/:id', function (req, res) {
-    res.send('Modifica parziale della pizza ' + req.params.id);
-});
+router.patch('/:id', pizzaController.modify);
 
 // destroy
 router.delete('/:id', pizzaController.destroy);
