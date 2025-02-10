@@ -7,7 +7,8 @@ const menu = require('../data/pizzas');
 function index(req, res) {
     // res.send('Lista delle pizze');
     // res.json(menu);
-
+    // inseriamo un errore
+    throw new Error("Errore di test");
     //Inizialmente, il menu filtrato corrisponde a quello originale
     let filteredMenu = menu;
 
