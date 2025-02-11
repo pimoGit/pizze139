@@ -1,6 +1,11 @@
 const express = require('express')
 const app = express()
 const port = 3000
+
+// importiamo il middleware di CORS
+var cors = require('cors')
+
+
 // importiamo il roputer delle pizze
 const pizzasRouter = require('./routers/pizzas');
 
@@ -21,6 +26,10 @@ app.use(express.static('public'));
 
 // registro il body-parser per "application/json"
 app.use(express.json());
+
+// registro il middleware di CORS
+app.use(cors())
+
 
 // registriamo il middleware di check time, a livello globale
 // app.use(checkTime);	
