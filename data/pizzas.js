@@ -24,6 +24,12 @@ const menu = [
         name: "4 formaggi",
         image: "http://localhost:3000/pizze/4_formaggi.jpeg",
         ingredients: ["pomodoro", "mozzarella", "gorgonzola", "parmigiano", "ricotta"],
+    },
+    {
+        id: 6,
+        name: "5 formaggi",
+        image: "http://localhost:3000/pizze/4_formaggi.jpeg",
+        ingredients: ["pomodoro", "mozzarella", "gorgonzola", "parmigiano", "ricotta", "pecorino"],
     }
 ];
 

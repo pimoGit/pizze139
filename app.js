@@ -28,7 +28,7 @@ app.use(express.static('public'));
 app.use(express.json());
 
 // registro il middleware di CORS
-app.use(cors())
+app.use(cors({ origin: 'http://localhost:5173' }))
 
 
 // registriamo il middleware di check time, a livello globale
