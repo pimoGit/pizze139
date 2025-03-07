@@ -1,27 +1,24 @@
 // importo i dati
-const menu = require('../data/pizzas');
+// const menu = require('../data/pizzas');
+
+// Importiamo il file di connessione al database
+const connection = require('../data/db');
 
 
 // gruppo delle funzione della logica relativa alle rotte delle pizze
 
 function index(req, res) {
-    // res.send('Lista delle pizze');
-    // res.json(menu);
-    // inseriamo un errore
-    // throw new Error("Errore di test");
-    //Inizialmente, il menu filtrato corrisponde a quello originale
-    let filteredMenu = menu;
 
-    // Se la richiesta contiene un filtro, allora filtriamo il menu
-    if (req.query.ingredient) {
-        filteredMenu = menu.filter(
-            pizza => pizza.ingredients.includes(req.query.ingredient)
-        );
-    }
+    // creiamo la query da lanciare
+    const sql = 'SELECT * FROM pizzas';
 
-    // restituiamo la variabile filteredMenu
-    // potrebbe essere stata filtrata o contenere il menu originale
-    res.json(filteredMenu);
+    // eseguiamo la query!
+    connection.query(sql, (err, results) => {
+        if (err) return res.status(500).json({ error: 'Database query failed' });
+        res.json(results);
+        console.log(results);
+
+    });
 }
 
 function show(req, res) {
@@ -30,24 +27,39 @@ function show(req, res) {
     // recuperiamo l'id dall' URL e trasformiamolo in numero
     const id = parseInt(req.params.id)
 
-    // cerchiamo il pizza tramite id
-    const pizza = menu.find(pizza => pizza.id === id);
+    // query di richiamo singola pizza tramite ID
+    const sql = 'SELECT * FROM pizzas WHERE id = ?';
 
-    // Facciamo il controllo
-    if (!pizza) {
+    // chiamata tramite mysql2 a DB pizzeria
+    connection.query(sql, [id], (err, results) => {
+        if (err) return res.status(500).json({ error: 'Database query failed' });
+        if (results.length === 0) return res.status(404).json({ error: 'Pizza not found' });
 
-        // ritorno lo stato di errore 404, non trovato
-        res.status(404);
+        // Salviamo temporaneamente la pizza (come oggetto di ritorno dal DB)
+        const pizza = results[0];
 
-        // ritorno un messaggio di errore (formato json)
-        return res.json({
-            error: "Not Found",
-            message: "Pizza non trovata"
-        })
-    }
+        // Prepariamo la query per gli ingredienti aiutandoci con una join e Where
+        const ingredientsSql = `
+            SELECT ingredients.*
+            FROM ingredients
+            JOIN ingredient_pizza ON ingredients.id = ingredient_pizza.ingredient_id
+            WHERE ingredient_pizza.pizza_id = ?
+            `;
 
-    // Restituiamolo sotto forma di JSON   
-    res.json(pizza);
+
+        // Se è andata bene, eseguiamo la seconda query per gli ingredienti
+        connection.query(ingredientsSql, [id], (err, ingredientsResults) => {
+            if (err) return res.status(500).json({ error: 'Database query failed' });
+
+            // Aggoiungiamo gli ingredienti alla pizza
+            pizza.ingredients = ingredientsResults;
+            res.json(pizza);
+        });
+    });
+
+
+
+
 }
 
 function store(req, res) {
@@ -162,32 +174,13 @@ function destroy(req, res) {
     // recuperiamo l'id dall' URL e trasformiamolo in numero
     const id = parseInt(req.params.id)
 
-    // cerchiamo il pizza tramite id
-    const pizza = menu.find(pizza => pizza.id === id);
+    const sql = 'DELETE FROM pizzas WHERE id = ?';
 
-    // Facciamo il controllo
-    if (!pizza) {
-
-        // ritorno lo stato di errore 404, non trovato
-        res.status(404);
-
-        // ritorno un messaggio di errore (formato json)
-        return res.json({
-            error: "Not Found",
-            message: "Pizza non trovata"
-        })
-    }
-
-    // cancello la pizza trovata
-    menu.splice(menu.indexOf(pizza), 1);
-
-    // log di riscontro di check su aggiornamento dati
-    console.log(menu);
-
-
-
-    // ritorno la risposta positiva di avvenuta cancellazione
-    res.sendStatus(204);
+    //Eliminiamo la pizza dal menu                       
+    connection.query(sql, [id], (err) => {
+        if (err) return res.status(500).json({ error: 'Failed to delete pizza' });
+        res.sendStatus(204)
+    });
 }
 
 // esportiamo tutto
